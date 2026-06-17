@@ -36,8 +36,18 @@ const decision = tutor.observe(obs);   // { action, item, feedback, activeSkill 
 item = decision.item;                  // next problem (or a break)
 ```
 
-## Next
+## The app
 
-The app (`index.html` and the UI) is the next phase: a calm, low-distraction
-middle-school math session built on this engine, with the student's profile persisting
-across sittings. See `../docs/DESIGN.md`.
+`index.html`, `style.css`, and `app.js` are a calm, low-distraction middle-school
+math session built on this engine: one problem at a time, immediate task-level
+feedback, an ambient sense of progress (no points or leaderboards), a gentle break
+when the tutor judges attention has dropped, and an "I'm stuck" button. The student's
+profile persists in the browser, so it remembers their pace across days.
+
+Run it locally (ES modules must be served, not opened as a file):
+
+```bash
+cd web
+python -m http.server 8000
+# open http://localhost:8000
+```

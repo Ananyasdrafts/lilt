@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Lilt</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <main class="wrap">
+    <div class="brand">lilt</div>
+
+    <!-- start -->
+    <section id="view-start" class="view">
+      <h1>Let's do some math.</h1>
+      <p class="welcome" id="welcome" hidden></p>
+      <label class="field">
+        <span>Your name</span>
+        <input id="name" type="text" autocomplete="off" placeholder="" />
+      </label>
+      <div class="field">
+        <span>Grade</span>
+        <div id="grades" class="chips"></div>
+      </div>
+      <label class="field">
+        <span>Topic</span>
+        <select id="topic"></select>
+      </label>
+      <button id="start" class="primary">Start</button>
+    </section>
+
+    <!-- practice -->
+    <section id="view-practice" class="view" hidden>
+      <div class="ambient">
+        <div class="skill" id="skill-name"></div>
+        <div class="bar"><div class="bar-fill" id="mastery-fill"></div></div>
+        <div class="count" id="count"></div>
+      </div>
+
+      <div class="problem" id="prompt"></div>
+
+      <form id="answer-form" autocomplete="off">
+        <input id="answer" type="text" inputmode="text" placeholder="Type your answer" />
+        <button id="check" class="primary" type="submit">Check</button>
+      </form>
+
+      <div class="feedback" id="feedback" hidden>
+        <div class="result" id="result"></div>
+        <div class="encourage" id="encourage"></div>
+        <button id="next" class="primary">Next</button>
+      </div>
+
+      <div class="footer">
+        <button id="stuck" class="link">I'm stuck</button>
+        <button id="done" class="link">Done for now</button>
+      </div>
+    </section>
+
+    <!-- break -->
+    <section id="view-break" class="view" hidden>
+      <h1>Take a breather.</h1>
+      <p class="big">Stretch, look out a window, take a few slow breaths.</p>
+      <button id="resume" class="primary">Keep going</button>
+    </section>
+
+    <!-- checkpoint -->
+    <section id="view-checkpoint" class="view" hidden>
+      <h1>Nice set.</h1>
+      <p class="big" id="checkpoint-msg"></p>
+      <button id="keep-going" class="primary">Keep going</button>
+      <button id="cp-break" class="link">Take a break</button>
+    </section>
+
+    <!-- end -->
+    <section id="view-end" class="view" hidden>
+      <h1>Great work today.</h1>
+      <p class="big" id="end-msg"></p>
+      <button id="restart" class="primary">Start again</button>
+    </section>
+  </main>
+
+  <script type="module" src="app.js"></script>
+</body>
+</html>

@@ -227,23 +227,47 @@ const HELP_BASE = 0.02, HELP_CONFUSION = 0.35, HELP_FRUST = 0.25, HELP_DISENGAGE
 const sigmoid = z => 1 / (1 + Math.exp(-z));
 
 export class Tracer {
-  constructor(nParticles = 500, seed = 12345) {
+  // profile (optional) is a saved summary from a previous session, so the belief
+  // about the student carries across days. A new session always starts rested
+  // (fresh attention and frustration); only what was learned about them persists.
+  constructor(nParticles = 500, seed = 12345, profile = null) {
     this.rng = mulberry32(seed >>> 0); this.n = nParticles;
     this.skillIds = SKILL_LIST.map(s => s.id);
     this.idx = {}; this.skillIds.forEach((s, i) => this.idx[s] = i);
     this.S = this.skillIds.length;
     const r = this.rng, n = this.n;
     const fill = f => Float64Array.from({ length: n }, f);
-    this.ability = fill(() => norm(r, 0, 0.8));
-    this.learnRate = fill(() => uni(r, 0.12, 0.26));
-    this.distract = fill(() => uni(r, 0.03, 0.16));
-    this.attnRecover = fill(() => uni(r, 0.45, 0.70));
-    this.frustGain = fill(() => uni(r, 0.08, 0.24));
-    this.frustRecover = fill(() => uni(r, 0.12, 0.24));
-    this.mastery = Array.from({ length: n }, () => Float64Array.from({ length: this.S }, () => clamp(norm(r, 0.12, 0.08), 0.01, 0.99)));
+    const T = profile && profile.traits ? profile.traits : null;
+    const around = (mean, sd, lo, hi) => fill(() => clamp(norm(r, mean, sd), lo, hi));
+    this.ability = T ? fill(() => norm(r, T.ability, 0.4)) : fill(() => norm(r, 0, 0.8));
+    this.learnRate = T ? around(T.learnRate, 0.03, 0.05, 0.35) : fill(() => uni(r, 0.12, 0.26));
+    this.distract = T ? around(T.distract, 0.02, 0.01, 0.25) : fill(() => uni(r, 0.03, 0.16));
+    this.attnRecover = T ? around(T.attnRecover, 0.05, 0.3, 0.8) : fill(() => uni(r, 0.45, 0.70));
+    this.frustGain = T ? around(T.frustGain, 0.03, 0.04, 0.3) : fill(() => uni(r, 0.08, 0.24));
+    this.frustRecover = T ? around(T.frustRecover, 0.03, 0.08, 0.3) : fill(() => uni(r, 0.12, 0.24));
+    const M = profile && profile.mastery ? profile.mastery : null;
+    this.mastery = Array.from({ length: n }, () => Float64Array.from({ length: this.S }, (_, s) => {
+      const base = M && (this.skillIds[s] in M) ? M[this.skillIds[s]] : 0.12;
+      return clamp(norm(r, base, 0.06), 0.0, 1.0);
+    }));
     this.attention = fill(() => clamp(norm(r, 0.95, 0.05), 0, 1));
     this.frustration = fill(() => clamp(norm(r, 0.05, 0.05), 0, 1));
     this.weights = fill(() => 1 / n);
+  }
+
+  _traitMean(arr) { let s = 0; for (let p = 0; p < this.n; p++) s += this.weights[p] * arr[p]; return s; }
+
+  // a compact summary to persist between sessions
+  exportProfile() {
+    const mastery = {};
+    for (const sid of this.skillIds) mastery[sid] = this.masteryMean(sid);
+    return {
+      version: 1, mastery, traits: {
+        ability: this._traitMean(this.ability), learnRate: this._traitMean(this.learnRate),
+        distract: this._traitMean(this.distract), attnRecover: this._traitMean(this.attnRecover),
+        frustGain: this._traitMean(this.frustGain), frustRecover: this._traitMean(this.frustRecover),
+      },
+    };
   }
 
   observe(obs) {
@@ -339,13 +363,13 @@ function levelForTarget(theta, skillId, targetP) {
 }
 
 export class Tutor {
-  constructor({ grade = null, seed = 12345, nParticles = 500, targetP = 0.75, estimator = null } = {}) {
+  constructor({ grade = null, seed = 12345, nParticles = 500, targetP = 0.75, estimator = null, scope = null } = {}) {
     this.tracer = estimator || new Tracer(nParticles, seed);
     this.rng = mulberry32((seed >>> 0) + 7);
     this.targetP = targetP;
     this.active = null;
     this.stepsSinceBreak = MIN_STEPS_BETWEEN_BREAKS;
-    this.scope = buildScope(grade);
+    this.scope = scope || buildScope(grade);
   }
 
   _mastery(sid) { return this.tracer.masteryMean(sid); }
