@@ -94,6 +94,14 @@ class Learner:
     attention: float = 1.0
     frustration: float = 0.0
     rng: np.random.Generator = field(default_factory=np.random.default_rng)
+    # "world" knobs for the evaluation's robustness matrix: scale the dynamics so a
+    # simulator can deliberately violate the tracer's assumed model. All 1.0 is the
+    # baseline world the rest of the code is written against.
+    decay_scale: float = 1.0
+    boredom_scale: float = 1.0
+    frust_gain_scale: float = 1.0
+    frust_recover_scale: float = 1.0
+    rt_sigma_scale: float = 1.0
 
     def __post_init__(self) -> None:
         if not self.knowledge:
@@ -115,7 +123,7 @@ class Learner:
         log_rt = (RT_BASE
                   + RT_EFFORT * (1.0 - k)       # low knowledge -> slow, effortful
                   - RT_HASTE * (1.0 - self.attention))  # low attention -> fast, careless
-        sigma = RT_SIGMA + RT_FRUST_VAR * self.frustration
+        sigma = (RT_SIGMA + RT_FRUST_VAR * self.frustration) * self.rt_sigma_scale
         log_rt += float(self.rng.normal(0.0, sigma))
         return float(exp(log_rt))
 
@@ -162,16 +170,17 @@ class Learner:
         theta = self.profile.ability + KNOW_SCALE * (k - 0.5)
         too_hard = max(0.0, item.difficulty - theta) / KNOW_SCALE
         if correct:
-            self.frustration = max(0.0, self.frustration - self.profile.frustration_recovery)
+            self.frustration = max(0.0, self.frustration
+                                   - self.profile.frustration_recovery * self.frust_recover_scale)
         else:
             self.frustration = min(1.0, self.frustration
-                                   + self.profile.frustration_gain * (1.0 + too_hard))
+                                   + self.profile.frustration_gain * self.frust_gain_scale * (1.0 + too_hard))
 
         # attention: decays with time on task, faster when the item is well below
         # mastery (boredom)
-        decay = self.profile.distractibility
+        decay = self.profile.distractibility * self.decay_scale
         if theta - item.difficulty > 1.5:  # far too easy
-            decay += BOREDOM_DECAY
+            decay += BOREDOM_DECAY * self.boredom_scale
         self.attention = float(min(1.0, max(0.0,
                                             self.attention * exp(-decay)
                                             + float(self.rng.normal(0.0, 0.01)))))

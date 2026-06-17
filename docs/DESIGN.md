@@ -136,8 +136,10 @@ can actually use.
 
 **Phase 2: honest evaluation.** `eval/run_eval.py`: multi-seed, matched-seed control
 (each adaptive run paired with a control on the same simulated learner), held-out
-learners, slice by distractibility (the equity headline: the biggest gains land on
-the most distractible students), baselines (correctness-only, an oracle that sees
+learners, slice by distractibility to see who it helps most (the study finds Lilt
+helps every group, and that the most distractible stay the hardest to teach for any
+tutor, so its absolute edge is not largest there, reported straight), baselines
+(correctness-only, an oracle that sees
 the true state, random), a Robust Evaluation Matrix across several simulators to
 avoid simulation-gap overfitting (Doroudi et al. 2017), a reward-hacking guard
 (measure post-test knowledge gain, never in-session accuracy), and planned honest

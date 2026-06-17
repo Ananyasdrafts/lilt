@@ -74,26 +74,38 @@ def _level_for_target(theta: float, skill_id: str, target_p: float) -> float:
     return float(min(1.0, max(0.0, level)))
 
 
+def build_scope(grade: int | None) -> list[str]:
+    """Skills for a grade plus the earlier-grade foundations they need, in
+    curriculum order. None means every skill."""
+    if grade is None:
+        chosen = set(items.SKILLS)
+    else:
+        chosen = set(items.skills_in_grade(grade))
+        for sid in list(chosen):
+            chosen |= items.all_prerequisites(sid)
+    return [sid for sid in items.topological_order() if sid in chosen]
+
+
 class Tutor:
     def __init__(self, grade: int | None = None, seed: int | None = None,
-                 n_particles: int = 500, target_p: float = 0.75):
-        self.tracer = Tracer(n_particles=n_particles, seed=seed)
+                 n_particles: int = 500, target_p: float = 0.75,
+                 estimator=None, enable_break: bool = True, enable_ease: bool = True,
+                 enable_switch: bool = True, enable_abstain: bool = True):
+        # the estimator supplies the belief; by default a Tracer, but the evaluator
+        # can pass an oracle that reads the true state for an upper bound
+        self.tracer = (estimator if estimator is not None
+                       else Tracer(n_particles=n_particles, seed=seed))
         self.rng = np.random.default_rng(seed)
         self.target_p = target_p
         self.active: str | None = None
         self.steps_since_break = MIN_STEPS_BETWEEN_BREAKS
         self.last_correct: bool | None = None
-        self.scope = self._build_scope(grade)
-
-    def _build_scope(self, grade: int | None) -> list[str]:
-        if grade is None:
-            chosen = set(items.SKILLS)
-        else:
-            chosen = set(items.skills_in_grade(grade))
-            for sid in list(chosen):
-                chosen |= items.all_prerequisites(sid)  # include foundations
-        # keep curriculum order
-        return [sid for sid in items.topological_order() if sid in chosen]
+        # ablation switches, for the evaluation
+        self.enable_break = enable_break
+        self.enable_ease = enable_ease
+        self.enable_switch = enable_switch
+        self.enable_abstain = enable_abstain
+        self.scope = build_scope(grade)
 
     # -- skill selection -----------------------------------------------------
 
@@ -140,7 +152,8 @@ class Tutor:
         mastery = self._mastery(self.active)
 
         # break: attention has bottomed out
-        if attention < BREAK_ATTENTION and self.steps_since_break >= MIN_STEPS_BETWEEN_BREAKS:
+        if (self.enable_break and attention < BREAK_ATTENTION
+                and self.steps_since_break >= MIN_STEPS_BETWEEN_BREAKS):
             self.tracer.on_break()
             self.steps_since_break = 0
             item = self._make_item(self.active, target_p=0.80)
@@ -148,14 +161,14 @@ class Tutor:
                             self.active)
 
         # ease: frustration is high
-        if frustration > FRUST_HIGH:
+        if self.enable_ease and frustration > FRUST_HIGH:
             item = self._make_item(self.active, target_p=0.85)
             return Decision(EASE, item,
                             "That one was tricky. Here is a friendlier one, you've got this.",
                             self.active)
 
         # switch: attention is low but not gone, re-engage with novelty
-        if attention < ATTENTION_LOW:
+        if self.enable_switch and attention < ATTENTION_LOW:
             new_skill = self._novelty_skill()
             self.active = new_skill
             item = self._make_item(new_skill, target_p=0.80)
@@ -163,7 +176,7 @@ class Tutor:
 
         # abstain: wrong, but the belief about this skill is still uncertain, so do
         # not read it as a gap; hold the level and try again
-        if (not obs.correct) and std > AMBIGUOUS_STD:
+        if self.enable_abstain and (not obs.correct) and std > AMBIGUOUS_STD:
             item = self._make_item(self.active, target_p=self.target_p)
             return Decision(ABSTAIN, item, "Let's try one more like that.", self.active)
 
