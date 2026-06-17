@@ -6,10 +6,10 @@ A standard adaptive tutor models one latent variable: does the student know this
 skill (this is knowledge tracing, Corbett and Anderson 1995). On a wrong answer
 it lowers the estimated ability and serves easier, slower content.
 
-For a capable but distractible student that is exactly wrong. Her true ability is
-high, but her observed performance is low because she drifts off and frustrates
+For a capable but distractible student that is exactly wrong. Their true ability is
+high, but their observed performance is low because they drift off and frustrate
 fast. A correctness-only tutor reads the low performance as low ability, serves
-easier and more repetitive content, and easy content is what makes a sharp kid
+easier and more repetitive content, and easy content is what makes a sharp student
 check out harder. The tutor's adaptation drives a doom loop. The learning-sciences
 literature both names this and says why:
 
@@ -68,12 +68,12 @@ belief-update plus rules rather than deep RL, for honesty and inspectability (th
 same call I made for Cairn). Actions: advance, hold, ease, switch format,
 encourage, offer a break, and abstain.
 
-The "feels smart" engine (my sister thrives when she gets things right):
+The "feels smart" engine (a capable student needs to feel competent to stay in it):
 
 - Hold the student near a 75% success rate, the optimal-challenge band where flow
   and the zone of proximal development overlap (Csikszentmihalyi; Vygotsky; the
-  inverted-U of Ma et al. 2017). For a capable-distractible kid this means keeping
-  it *harder* than a naive tutor would, because easy is what loses her.
+  inverted-U of Ma et al. 2017). For a capable but distractible student this means
+  keeping it *harder* than a naive tutor would, because easy is what loses them.
 - Engineer well-timed success: mastery experiences are the strongest source of
   self-efficacy (Bandura).
 - Feedback at the task level, never the person level: "that step is right because
@@ -89,11 +89,16 @@ A middle schooler sits right at that boundary.
 
 ## 4. The math content
 
-Middle-school math as a prerequisite graph (`items.py`), from signed-integer and
-fraction arithmetic through ratios, percentages, expressions, and one- and two-step
-equations. Each skill has a base difficulty and a procedural item generator, so the
-same code produces an item's difficulty for the simulator and the actual question
-and answer for the app. One source of truth for the math.
+Middle-school math organised the way the curriculum is, by grade (6, 7, 8) and by
+topic (Number System, Ratios and Proportions, Expressions and Equations), as a
+prerequisite graph (`items.py`) where prerequisites never point forward a grade. It
+spans fraction and integer arithmetic, GCF and LCM, ratios, unit rates, percentages
+and percent applications, exponents and the laws of exponents, order of operations,
+combining like terms, and one-step through multi-step equations. Geometry,
+Statistics and Probability, and Functions are planned for later phases. Each skill
+has a base difficulty and a procedural item generator, so the same code produces an
+item's difficulty for the simulator and the actual question and answer for the app.
+One source of truth for the math.
 
 ## 5. What Lilt deliberately does not do (the rigor signature)
 
@@ -117,8 +122,8 @@ Three things the evidence rules out, stated plainly:
 
 The engine is identical whether its inputs come from a simulator or a real student
 in a browser: both produce (correct, response-time, help-requested) per step. That
-is the bridge from a rigorous, honestly-evaluated engine to a tool my sister can
-actually use.
+is the bridge from a rigorous, honestly-evaluated engine to a tool a real student
+can actually use.
 
 **Phase 0 (done): scaffold.** Repo, package, CI, MIT, this design doc.
 
@@ -132,7 +137,7 @@ actually use.
 **Phase 2: honest evaluation.** `eval/run_eval.py`: multi-seed, matched-seed control
 (each adaptive run paired with a control on the same simulated learner), held-out
 learners, slice by distractibility (the equity headline: the biggest gains land on
-the students most like my sister), baselines (correctness-only, an oracle that sees
+the most distractible students), baselines (correctness-only, an oracle that sees
 the true state, random), a Robust Evaluation Matrix across several simulators to
 avoid simulation-gap overfitting (Doroudi et al. 2017), a reward-hacking guard
 (measure post-test knowledge gain, never in-session accuracy), and planned honest
@@ -142,22 +147,22 @@ nulls. This is the grad-application research proof.
 bank (grades 6 to 8) with hints and worked steps, and port `items` + `tracing` +
 `tutor` to JavaScript (`engine.js`) so the same engine runs in the browser.
 
-**Phase 4: the app she uses.** `web/`: she opens it, does math, and the engine runs
-live on her real (correct, response-time, help) stream. Interventions happen in
-real time. The interface follows the ADHD design evidence: short bounded segments
-that close with feedback, immediate task-level feedback, one thing on screen at a
-time, an ambient progress indicator rather than a ticking clock, and an optional
-break. Her profile persists across sessions in the browser, so it learns her pace
-over days, not just within one sitting.
+**Phase 4: the app a student uses.** `web/`: the student opens it, does math, and the
+engine runs live on their real (correct, response-time, help) stream. Interventions
+happen in real time. The interface follows the ADHD design evidence: short bounded
+segments that close with feedback, immediate task-level feedback, one thing on screen
+at a time, an ambient progress indicator rather than a ticking clock, and an optional
+break. The profile persists across sessions in the browser, so it learns the
+student's pace over days, not just within one sitting.
 
-**Phase 5: personalization and the public demo.** A short calibration that reads her
-pace and sensitivity, plus a public research demo (simulated learner, naive
-correctness-only tutor versus Lilt on the same kid) and deployment to GitHub Pages
-so she can use it from any browser.
+**Phase 5: personalization and the public demo.** A short calibration that reads the
+student's pace and sensitivity, plus a public research demo (simulated learner, naive
+correctness-only tutor versus Lilt on the same learner) and deployment to GitHub
+Pages so it can be used from any browser.
 
-**Phase 6: real-use polish.** Tune session length and topic coverage to how she
-actually uses it, an optional parent view, and an honest "what it cannot do yet"
-note. The end goal is a calm, well-paced math tutor she reaches for on her own.
+**Phase 6: real-use polish.** Tune session length and topic coverage to real use, an
+optional parent view, and an honest "what it cannot do yet" note. The end goal is a
+calm, well-paced math tutor a student reaches for on their own.
 
 ## 7. References
 

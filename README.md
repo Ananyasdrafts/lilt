@@ -2,11 +2,11 @@
 
 A middle-school math tutor that adapts to *why* a student is struggling, not just whether they got the last answer right.
 
-Most adaptive tutors track one thing: does the student know this skill. When an answer is wrong, they lower the estimated ability and serve easier, slower content. For a student who is capable but distractible, that is the wrong move. A wrong answer from her usually means she drifted off or got frustrated, not that she cannot do it, and easier content just bores her further. The tutor's well-meant adaptation makes the real problem worse.
+Most adaptive tutors track one thing: does the student know this skill. When an answer is wrong, they lower the estimated ability and serve easier, slower content. For a student who is capable but distractible, that is the wrong move. A wrong answer usually means the student drifted off or got frustrated, not that they cannot do it, and easier content just bores them further. The tutor's well-meant adaptation makes the real problem worse.
 
 Lilt models three things at once instead of one: how well the student knows the skill, how engaged they are right now, and how frustrated they are. It tells those apart from the timing and pattern of answers, intervenes on the actual cause (ease and encourage when frustrated, re-engage or switch when drifting, advance when genuinely mastered), and holds back from marking a student as "behind" when the cause of a wrong answer is genuinely unclear.
 
-I built this looking out for my younger sister, who is sharp but loses focus fast and gets frustrated quickly, and whose grades have never reflected what she can actually do.
+The motivation is personal: my younger sister, who is sharp but loses focus fast, and whose grades have never reflected what she can actually do.
 
 ## Status
 

@@ -190,10 +190,11 @@ def make_learner(profile: LearnerProfile, seed: int | None = None) -> Learner:
     return Learner(profile=profile, rng=np.random.default_rng(seed))
 
 
-def sister_profile() -> LearnerProfile:
-    """The profile this whole project is built around: high ability, but loses
-    attention fast and frustrates easily. A correctness-only tutor reads her low
-    observed performance as low ability."""
+def capable_distractible_profile() -> LearnerProfile:
+    """A high-ability, high-distractibility profile: capable, but loses attention
+    fast and frustrates easily, so observed performance runs well below true
+    ability. This is the profile a correctness-only tutor misreads as low ability,
+    and the case this whole approach is built to handle."""
     return LearnerProfile(
         ability=0.8, learning_rate=0.22, distractibility=0.14,
         attention_recovery=0.6, frustration_gain=0.22,
