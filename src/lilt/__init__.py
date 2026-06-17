@@ -4,11 +4,11 @@ The package is built in stages (see docs/DESIGN.md):
   items     the middle-school math skill graph and procedural item generators
   learners  simulated students with three latent states (knowledge, attention,
             frustration) that emit three observables per step
-  tracing   (next) a belief filter over the three states
-  tutor     (next) the policy that acts on the cause of a wrong answer
+  tracing   a particle filter (belief) over the three states
+  tutor     the policy that acts on the cause of a wrong answer
 """
 
-from lilt import items, learners
+from lilt import items, learners, tracing, tutor
 
-__all__ = ["items", "learners"]
+__all__ = ["items", "learners", "tracing", "tutor"]
 __version__ = "0.1.0"
