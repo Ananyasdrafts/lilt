@@ -1,0 +1,22 @@
+# python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.eggs/
+build/
+dist/
+.pytest_cache/
+
+# venv
+.venv/
+venv/
+env/
+
+# local data (gitignored, see docs/datasets.md when added)
+data/
+
+# os / editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
