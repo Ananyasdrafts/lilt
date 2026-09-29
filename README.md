@@ -20,11 +20,11 @@ Each tutor drives its own copy of the same simulated student (matched seed), so 
 
 - **Against a correctness-only tutor.** On grade 6, Lilt produced a knowledge gain of about 0.27 versus about 0.06 for the naive tutor, roughly five times as much, and matched an oracle that sees the student's true hidden state (about 0.26). The belief filter is, in this study, about as good as knowing the truth.
 - **It holds when the model is wrong.** The comparison runs across three simulator "worlds" whose dynamics deliberately break the tracer's assumptions (attention that fades faster, frustration that lingers). Lilt beats the naive tutor in all three, so the win is not an artefact of the model matching the simulator.
-- **Who it helps.** Lilt helps every group, but the most distractible students are the hardest to teach for any tutor, so its absolute advantage is not largest there. I expected the opposite and the data did not support it, so this is stated plainly rather than dressed up.
+- **Who it helps.** Lilt helps every group, but the most distractible students are the hardest to teach for any tutor, so its absolute advantage is not largest there. I expected the opposite and the data did not support it.
 
   ![knowledge gain by distractibility](docs/images/by_distractibility.png)
 
-- **What drives the gain, reported straight.** An ablation turns each piece off in turn. Almost all of the gain comes from managing attention: removing the break collapses Lilt back to the naive level. Switching for novelty helps a little. Easing on frustration and the explicit "abstain" action are near-zero on this metric, because the protection against mislabeling a capable student as behind already lives in the belief filter (it resists dropping mastery on a fast miss), so the separate abstain step is mostly redundant on a pure knowledge-gain measure. Its value is in not telling a capable student she is behind, which this metric does not capture.
+- **What drives the gain.** An ablation turns each piece off in turn. Almost all of the gain comes from managing attention: removing the break collapses Lilt back to the naive level. Switching for novelty helps a little. Easing on frustration and the explicit "abstain" action are near-zero on this metric, because the protection against mislabeling a capable student as behind already lives in the belief filter (it resists dropping mastery on a fast miss), so the separate abstain step is mostly redundant on a pure knowledge-gain measure. Its value is in not telling a capable student she is behind, which this metric does not capture.
 
   ![holds across simulators](docs/images/robustness.png)
 
