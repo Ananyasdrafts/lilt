@@ -26,3 +26,5 @@ jobs:
           node-version: "20"
       - name: engine smoke test
         run: node web/engine.smoke.mjs
+      - name: teaching and placement smoke test
+        run: node web/teach.smoke.mjs

@@ -13,45 +13,88 @@
     <!-- start -->
     <section id="view-start" class="view">
       <h1>Let's do some math.</h1>
-      <p class="welcome" id="welcome" hidden></p>
-      <label class="field">
-        <span>Your name</span>
-        <input id="name" type="text" autocomplete="off" placeholder="" />
-      </label>
-      <div class="field">
-        <span>Grade</span>
-        <div id="grades" class="chips"></div>
+      <p class="lede">One problem at a time. If you get stuck, the hint button walks you through it step by step. It starts with a few questions to find your level.</p>
+      <form id="start-form" autocomplete="off">
+        <label class="field">
+          <span>Your name</span>
+          <input id="name" type="text" />
+        </label>
+        <p class="welcome" id="welcome" hidden>
+          Welcome back. We'll pick up where you left off.
+          <button type="button" id="fresh" class="link inline">Start fresh instead</button>
+        </p>
+        <div class="field">
+          <span>Grade</span>
+          <div id="grades" class="chips"></div>
+        </div>
+        <label class="field">
+          <span>Topic</span>
+          <select id="topic"></select>
+        </label>
+        <button id="start" class="primary" type="submit">Start</button>
+      </form>
+    </section>
+
+    <!-- placement check -->
+    <section id="view-placement" class="view" hidden>
+      <div class="eyebrow"><span>Finding your level</span><span id="check-count"></span></div>
+      <p class="small">No hints here. Answer what you can, and tap Not sure for anything you haven't learned yet.</p>
+      <div class="skill-small" id="check-skill"></div>
+      <div class="problem" id="check-prompt"></div>
+      <form id="check-form" class="answer-row" autocomplete="off">
+        <input id="check-answer" type="text" />
+        <button class="primary" type="submit">Check</button>
+      </form>
+      <p class="note info" id="check-note" hidden></p>
+      <div class="footer">
+        <button id="check-skip" class="secondary">Not sure</button>
       </div>
-      <label class="field">
-        <span>Topic</span>
-        <select id="topic"></select>
-      </label>
-      <button id="start" class="primary">Start</button>
+    </section>
+
+    <!-- placement result -->
+    <section id="view-placed" class="view" hidden>
+      <h1>Here's where we'll start.</h1>
+      <div id="placed-list"></div>
+      <p class="big" id="placed-start"></p>
+      <button id="placed-go" class="primary">Start practicing</button>
     </section>
 
     <!-- practice -->
     <section id="view-practice" class="view" hidden>
-      <div class="ambient">
-        <div class="skill" id="skill-name"></div>
+      <div class="head">
+        <div class="head-row">
+          <div>
+            <div class="skill" id="skill-name"></div>
+            <div class="skill-meta" id="skill-meta"></div>
+          </div>
+          <span class="pill" id="mastery-label"></span>
+        </div>
         <div class="bar"><div class="bar-fill" id="mastery-fill"></div></div>
-        <div class="count" id="count"></div>
+        <div class="head-row small-row">
+          <div class="dots-wrap"><span class="dots-label" id="dots-label"></span><div class="dots" id="dots" aria-hidden="true"></div></div>
+          <div class="count" id="count"></div>
+        </div>
       </div>
 
       <div class="problem" id="prompt"></div>
 
-      <form id="answer-form" autocomplete="off">
-        <input id="answer" type="text" inputmode="text" placeholder="Type your answer" />
+      <form id="answer-form" class="answer-row" autocomplete="off">
+        <input id="answer" type="text" />
         <button id="check" class="primary" type="submit">Check</button>
       </form>
 
+      <div class="result" id="result" hidden></div>
+      <p class="note" id="note" hidden></p>
+      <ol class="steps" id="steps" hidden></ol>
+
       <div class="feedback" id="feedback" hidden>
-        <div class="result" id="result"></div>
-        <div class="encourage" id="encourage"></div>
+        <button id="show-steps" class="link" hidden>See the steps</button>
+        <p class="tutor-note" id="tutor-note"></p>
         <button id="next" class="primary">Next</button>
       </div>
 
       <div class="footer">
-        <button id="stuck" class="link">I'm stuck</button>
+        <button id="hint" class="secondary">Hint</button>
         <button id="done" class="link">Done for now</button>
       </div>
     </section>
@@ -59,23 +102,25 @@
     <!-- break -->
     <section id="view-break" class="view" hidden>
       <h1>Take a breather.</h1>
-      <p class="big">Stretch, look out a window, take a few slow breaths.</p>
-      <button id="resume" class="primary">Keep going</button>
+      <p class="big" id="break-msg"></p>
+      <button id="resume" class="primary">I'm ready</button>
     </section>
 
     <!-- checkpoint -->
     <section id="view-checkpoint" class="view" hidden>
       <h1>Nice set.</h1>
       <p class="big" id="checkpoint-msg"></p>
+      <ul class="skills" id="checkpoint-skills"></ul>
       <button id="keep-going" class="primary">Keep going</button>
-      <button id="cp-break" class="link">Take a break</button>
+      <button id="cp-break" class="link">Take a break first</button>
     </section>
 
     <!-- end -->
     <section id="view-end" class="view" hidden>
-      <h1>Great work today.</h1>
+      <h1>Good work today.</h1>
       <p class="big" id="end-msg"></p>
-      <button id="restart" class="primary">Start again</button>
+      <div id="end-list"></div>
+      <button id="restart" class="primary">Back to start</button>
     </section>
   </main>
 

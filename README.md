@@ -10,9 +10,11 @@ The motivation is personal: my younger sister, who is sharp but loses focus fast
 
 ## Status
 
-The engine, its honest evaluation, and a working browser app for middle-school math are built (simulation-first, the same approach I used for MedMaps and Cairn). Next is a short calibration and deployment so it can be used from any browser. See [docs/DESIGN.md](docs/DESIGN.md) for the full design and the staged build plan.
+The engine, its honest evaluation, and a working browser app for middle-school math are built (simulation-first, the same approach I used for MedMaps and Cairn). Next is deployment so it can be used from any browser. See [docs/DESIGN.md](docs/DESIGN.md) for the full design and the staged build plan.
 
-To try the app: `cd web && python -m http.server 8000`, then open `http://localhost:8000`. It runs entirely in the browser.
+The app starts with a short check (up to six questions) to find the student's level, so a grade 8 student doesn't have to start from grade 6 fractions. Every problem has a worked solution: the hint button reveals it one step at a time, a wrong answer gets a note on the likely mistake and a second try, and a second miss shows the full solution. After each problem it says in one line what the tutor decided and why.
+
+To try the app, from the repo folder: `cd web && python3 -m http.server 8000`, then open `http://localhost:8000`. It runs entirely in the browser.
 
 ## What the evaluation shows
 
